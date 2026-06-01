@@ -79,7 +79,7 @@ function App() {
           <Route path="/sitemap" element={<Sitemap />} />
           <Route path="/categories" element={<Categories />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/panel-custom" element={<CustomPanel />} />
+          <Route path="/kazuty-control-8474" element={<CustomPanel />} />
         </Routes>
       </main>
 
