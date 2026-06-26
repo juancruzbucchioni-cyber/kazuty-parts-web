@@ -42,9 +42,12 @@ export default function Navbar() {
       <div className={`container flex flex-col gap-4 transition-all duration-300 lg:flex-row lg:items-center lg:justify-between ${isScrolled ? 'min-h-16 py-3' : 'min-h-24 py-4'}`}>
         {!isScrolled && (
           <Link to="/" className="flex items-center">
-            <div className="leading-none">
-              <p className="font-brand text-2xl font-black tracking-wide text-white md:text-3xl">ELVIO</p>
-              <p className="text-xl font-black italic tracking-wide text-white md:text-2xl">Monteiro</p>
+            <div className="rounded-lg bg-white/95 px-3 py-2 shadow-sm">
+              <img
+                src="/branding/logo-elvio.png"
+                alt="Elvio Monteiro"
+                className="h-14 w-auto object-contain md:h-16"
+              />
             </div>
           </Link>
         )}
@@ -55,7 +58,7 @@ export default function Navbar() {
               type="text"
               value={searchQuery}
               onChange={(event) => setSearchQuery(event.target.value)}
-              placeholder="Â¿QuÃ© estÃ¡s buscando?"
+              placeholder="¿Qué estás buscando?"
               className="h-12 w-full rounded-xl border border-white/60 bg-black px-5 pr-12 text-base text-white placeholder:text-white/75 focus:outline-none focus:ring-2 focus:ring-white"
             />
             <Search className="absolute right-4 top-1/2 h-7 w-7 -translate-y-1/2 text-white" />
@@ -80,7 +83,7 @@ export default function Navbar() {
                   </Link>
                   <button onClick={handleSignOut} className="flex w-full items-center px-4 py-2 text-left text-sm hover:bg-white/10">
                     <LogOut className="mr-2 h-4 w-4" />
-                    Cerrar sesiÃ³n
+                    Cerrar sesión
                   </button>
                 </div>
               )}
