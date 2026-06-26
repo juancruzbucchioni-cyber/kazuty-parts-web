@@ -1,5 +1,5 @@
 ﻿import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Instagram, LogOut, Search, ShoppingCart, User } from 'lucide-react';
 import { useCartStore } from '../store/cartStore';
 import { useAuthStore } from '../store/authStore';
@@ -14,8 +14,10 @@ export default function Navbar() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isScrolled, setIsScrolled] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, profile, signOut } = useAuthStore();
   const displayName = profile?.username || user?.email?.split('@')[0] || 'Mi cuenta';
+  const isAdminPanel = location.pathname === '/elvio-control-8474';
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 90);
@@ -104,7 +106,7 @@ export default function Navbar() {
         </div>
       </div>
 
-      {!isScrolled && (
+      {!isScrolled && !isAdminPanel && (
         <div className="border-t border-white/10">
           <div className="container flex flex-wrap items-center justify-center gap-6 py-4 text-base font-medium tracking-wide md:gap-10 md:text-lg">
             <Link to="/" className="hover:text-gray-300">Inicio</Link>
