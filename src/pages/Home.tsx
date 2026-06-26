@@ -6,6 +6,8 @@ import { Product, Testimonial } from '../types/supabase';
 import ProductCard from '../components/ProductCard';
 import { useCartStore } from '../store/cartStore';
 
+const DEFAULT_REVIEW_AVATAR = '/branding/avatar-placeholder.svg';
+
 type ClientReview = {
   nombre: string;
   mensaje: string;
@@ -32,7 +34,7 @@ export default function Home() {
           const normalized = (data as Testimonial[]).map((item) => ({
             nombre: item.nombre,
             mensaje: item.mensaje,
-            foto: item.foto_url || '/branding/logo.png',
+            foto: item.foto_url || DEFAULT_REVIEW_AVATAR,
           }));
           setClientReviews(normalized);
           return;
@@ -55,7 +57,7 @@ export default function Home() {
         {
           nombre: 'Cliente Elvio Monteiro',
           mensaje: 'Excelente atencion, me ayudaron a elegir justo lo que necesitaba.',
-          foto: '/branding/logo.png',
+          foto: DEFAULT_REVIEW_AVATAR,
         },
       ]);
     }
@@ -136,7 +138,7 @@ export default function Home() {
                 <div key={`${review.nombre}-${index}`} className="mx-3 shrink-0 rounded-md border border-white/10 bg-zinc-950 px-4 py-2 shadow-sm">
                   <div className="flex items-center gap-3">
                     <img
-                      src={review.foto || '/branding/logo.png'}
+                      src={review.foto || DEFAULT_REVIEW_AVATAR}
                       alt={review.nombre}
                       className="h-10 w-10 rounded-full border border-white/20 object-cover"
                     />
