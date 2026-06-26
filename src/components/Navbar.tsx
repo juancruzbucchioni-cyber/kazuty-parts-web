@@ -40,17 +40,15 @@ export default function Navbar() {
   return (
     <nav className="sticky top-0 z-50 border-b border-white/10 bg-zinc-950/95 text-white shadow-[0_8px_28px_rgba(255,255,255,0.04)] backdrop-blur-md">
       <div className={`container flex flex-col gap-4 transition-all duration-300 lg:flex-row lg:items-center lg:justify-between ${isScrolled ? 'min-h-16 py-3' : 'min-h-24 py-4'}`}>
-        {!isScrolled && (
-          <Link to="/" className="flex items-center">
-            <div className="rounded-lg bg-white/95 px-3 py-2 shadow-sm">
-              <img
-                src="/branding/logo-elvio.png"
-                alt="Elvio Monteiro"
-                className="h-14 w-auto object-contain md:h-16"
-              />
-            </div>
-          </Link>
-        )}
+        <Link to="/" className="flex items-center">
+          <div className={`rounded-lg bg-white/95 shadow-sm transition-all duration-300 ${isScrolled ? 'px-2 py-1' : 'px-3 py-2'}`}>
+            <img
+              src="/branding/logo-elvio.png"
+              alt="Elvio Monteiro"
+              className={`w-auto object-contain transition-all duration-300 ${isScrolled ? 'h-10 md:h-12' : 'h-14 md:h-16'}`}
+            />
+          </div>
+        </Link>
 
         <form onSubmit={handleSearch} className={`order-3 w-full lg:order-none ${isScrolled ? 'lg:max-w-4xl' : 'lg:max-w-2xl'}`}>
           <div className="relative">
@@ -94,17 +92,15 @@ export default function Navbar() {
               <span>Mi cuenta</span>
             </Link>
           ) : null}
-          {!isScrolled && (
-            <Link to="/cart" className="relative flex flex-col items-center gap-1 text-sm text-white hover:text-gray-300">
-              <ShoppingCart className="h-8 w-8" />
-              {itemCount > 0 && (
-                <span className="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-white text-xs font-black text-black">
-                  {itemCount}
-                </span>
-              )}
-              <span>Mi carrito</span>
-            </Link>
-          )}
+          <Link to="/cart" className="relative flex flex-col items-center gap-1 text-sm text-white hover:text-gray-300">
+            <ShoppingCart className={`${isScrolled ? 'h-7 w-7' : 'h-8 w-8'}`} />
+            {itemCount > 0 && (
+              <span className="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-white text-xs font-black text-black">
+                {itemCount}
+              </span>
+            )}
+            <span>Mi carrito</span>
+          </Link>
         </div>
       </div>
 
