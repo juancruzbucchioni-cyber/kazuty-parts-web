@@ -50,6 +50,13 @@ type BulkProductRow = {
   image_url?: string;
 };
 
+type LocalTestimonial = {
+  nombre?: string;
+  mensaje?: string;
+  foto?: string;
+  foto_url?: string;
+};
+
 const emptyProduct: ProductForm = {
   name: '',
   description: '',
@@ -173,6 +180,30 @@ function findMatchingProduct(row: BulkProductRow, productsByName: Map<string, Pr
   return undefined;
 }
 
+async function loadLocalTestimonials(): Promise<Testimonial[]> {
+  try {
+    const response = await fetch('/testimonials.json');
+    if (!response.ok) return [];
+    const data = await response.json();
+    if (!Array.isArray(data)) return [];
+
+    return (data as LocalTestimonial[])
+      .filter((item) => item.nombre && item.mensaje)
+      .map((item, index) => ({
+        id: `local-${index}`,
+        nombre: item.nombre || '',
+        mensaje: item.mensaje || '',
+        foto_url: item.foto_url || item.foto || '',
+        activo: true,
+        orden: index + 1,
+        created_at: new Date(0).toISOString(),
+      }));
+  } catch (error) {
+    console.error('No se pudieron cargar las resenas locales:', error);
+    return [];
+  }
+}
+
 export default function CustomPanel() {
   const { user, profile, loading } = useAuthStore();
   const [activeTab, setActiveTab] = useState<'products' | 'categories' | 'testimonials'>('products');
@@ -216,7 +247,8 @@ export default function CustomPanel() {
 
     setProducts((productData || []) as Product[]);
     setCategories((categoryData || []) as AdminCategory[]);
-    setTestimonials((testimonialData || []) as Testimonial[]);
+    const supabaseTestimonials = (testimonialData || []) as Testimonial[];
+    setTestimonials(supabaseTestimonials.length > 0 ? supabaseTestimonials : await loadLocalTestimonials());
 
     const groupedImages = ((imagesData || []) as ProductImage[]).reduce<Record<string, ProductImage[]>>((acc, image) => {
       acc[image.product_id] = [...(acc[image.product_id] || []), image];
@@ -492,7 +524,7 @@ export default function CustomPanel() {
 
   const editTestimonial = (testimonial: Testimonial) => {
     setTestimonialForm({
-      id: testimonial.id,
+      id: testimonial.id.startsWith('local-') ? undefined : testimonial.id,
       nombre: testimonial.nombre || '',
       mensaje: testimonial.mensaje || '',
       foto_url: testimonial.foto_url || '',
@@ -694,12 +726,28 @@ export default function CustomPanel() {
             <button disabled={saving} className="inline-flex items-center gap-2 rounded-md bg-white px-4 py-2 font-bold text-white"><Save className="h-4 w-4" />Guardar resena</button>
           </form>
           <div className={`${panelClass} space-y-2`}>
-            {testimonials.map((testimonial) => (
-              <div key={testimonial.id} className="flex items-center justify-between gap-3 rounded-md border border-white/10 bg-white/5 p-3 text-gray-200">
-                <div><p className="font-bold text-white">{testimonial.nombre}</p><p className="text-sm text-gray-300">{testimonial.mensaje}</p></div>
-                <div className="flex gap-2"><button onClick={() => editTestimonial(testimonial)} className="rounded bg-white/10 p-2"><Edit className="h-4 w-4" /></button><button onClick={() => deleteTestimonial(testimonial.id)} className="rounded bg-red-500/20 p-2 text-red-300"><Trash2 className="h-4 w-4" /></button></div>
+            {testimonials.length === 0 ? (
+              <div className="rounded-md border border-white/10 bg-white/5 p-3 text-gray-300">
+                Todavia no hay resenas cargadas.
               </div>
-            ))}
+            ) : null}
+            {testimonials.map((testimonial) => {
+              const isLocal = testimonial.id.startsWith('local-');
+
+              return (
+                <div key={testimonial.id} className="flex items-center justify-between gap-3 rounded-md border border-white/10 bg-white/5 p-3 text-gray-200">
+                  <div>
+                    <p className="font-bold text-white">{testimonial.nombre}</p>
+                    <p className="text-sm text-gray-300">{testimonial.mensaje}</p>
+                    {isLocal ? <p className="mt-1 text-xs font-bold text-purple-300">Resena local de la web. Toca editar y guardar para subirla a Supabase.</p> : null}
+                  </div>
+                  <div className="flex gap-2">
+                    <button onClick={() => editTestimonial(testimonial)} className="rounded bg-white/10 p-2" title={isLocal ? 'Copiar al formulario' : 'Editar resena'}><Edit className="h-4 w-4" /></button>
+                    {!isLocal ? <button onClick={() => deleteTestimonial(testimonial.id)} className="rounded bg-red-500/20 p-2 text-red-300"><Trash2 className="h-4 w-4" /></button> : null}
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       ) : null}
