@@ -80,6 +80,18 @@ export type Testimonial = {
   created_at: string;
 };
 
+export type Offer = {
+  id: string;
+  product_id: string;
+  title: string;
+  badge: string;
+  offer_price?: number | null;
+  activo: boolean;
+  orden: number;
+  created_at: string;
+  products?: Product;
+};
+
 export type ProductDetails = Product & {
   category_name: string;
   category_description?: string;
